@@ -14,7 +14,7 @@
       "dom"
     ],
     "paths": {
-      "ngx-i18n": [
+      "ngx-month-picker": [
         "lib"
       ]
     }
