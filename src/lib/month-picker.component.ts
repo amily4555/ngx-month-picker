@@ -1,6 +1,6 @@
 import {
-    Component, OnInit, Input, OnChanges, SimpleChanges, AfterViewInit, enableProdMode, Output,
-    EventEmitter, AfterContentChecked, AfterViewChecked
+    Component, Input, OnChanges, SimpleChanges, enableProdMode, Output,
+    EventEmitter
 } from '@angular/core';
 import * as mu from 'mzmu';
 import {$$MonthPicker} from './month-picker.serv';
@@ -12,9 +12,10 @@ enableProdMode();
         <div class="input-group" 
             month-picker 
             [options]="options"
-            (getMonths)="getMonths_($event)">
+            (picker)="picker_($event)"
+            (selected)="selected_($event)">
             <span class="form-control uneditable-input" >
-                {{range_months?.start}} - {{range_months?.end}}
+                {{range?.start}} - {{range?.end}}
             </span>
             <span class="input-group-btn">
                 <button class="btn btn-secondary" type="button">
@@ -24,52 +25,29 @@ enableProdMode();
         </div>
     `
 })
-export class $$MonthPickerComponent implements OnChanges, AfterViewChecked {
+export class $$MonthPickerComponent implements OnChanges {
 
-    @Input() options: any;
-    @Output() getMonths: any = new EventEmitter<any>();
+    @Input() options: any = {};
+    @Output() selected: any = new EventEmitter<any>();
+    @Output() picker: any = new EventEmitter<any>();
 
-    range_months: any = {};
+    range: any;
 
-    constructor(
-        private $$MonthPicker: $$MonthPicker
-    ) {
+    constructor(private $$MonthPicker: $$MonthPicker) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        mu.run(mu.prop(changes, 'options.currentValue'), (options) => {
-            let setDate = mu.map(options.setDate, (d) => {
-                if (typeof d === 'string') {
-                    let dd = d.split('-');
-                    return [
-                        +mu.trim(dd[1]),
-                        +mu.trim(dd[0])
-                    ]
-                }
-                return d;
-            });
-
-            this.range_months = {
-                start: this.$$MonthPicker.dateformat(setDate[0]),
-                end: this.$$MonthPicker.dateformat(setDate[1])
-            };
-        });
+        console.debug(':::::::', JSON.stringify(this.options));
     }
 
-    ngAfterViewChecked(): void {
-        mu.empty(this.range_months, () => {
-            this.range_months = this.$$MonthPicker.options.range_months;
-            // this.getMonths.emit({
-            //     range_months: this.range_months,
-            //     setDate: this.$$MonthPicker.options.setDate
-            // });
-        });
+    selected_(rst: any): void {
+        this.range = rst;
+        this.selected.emit(rst);
     }
 
-    getMonths_(rst: any): void {
-        console.debug(rst);
-        this.range_months = rst.range_months;
-        this.getMonths.emit(rst);
+    picker_(rst: any): void {
+        this.range = rst;
+        this.picker.emit(rst);
     }
 
 }

@@ -14,13 +14,23 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
     @Output() picker: EventEmitter<any> = new EventEmitter<any>();
     @Output() selected: EventEmitter<any> = new EventEmitter<any>();
 
+    $rp: any;
+
     constructor(private elm: ElementRef,
                 private $$MonthPicker: $$MonthPicker) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        console.debug(JSON.stringify(this.options));
+
         mu.run(mu.prop(changes, 'options.currentValue'), (options) => {
+
+            // console.debug(JSON.stringify(this.options));
+
             this.options = options;
+            mu.run(this.$rp, () => {
+                this.init();
+            });
         });
     }
 
@@ -54,7 +64,16 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
     diffresult(date, diff): any[] {
         let date_ = date[1] * 12 + date[0];
         let result = date_ - diff;
-        return [result % 12, Math.floor(result / 12)];
+
+        let month = result % 12;
+        let year = Math.floor(result / 12);
+
+        if(!month){
+            month = 12;
+            year = year - 1;
+        }
+
+        return [month, year];
     }
 
     calc(options): boolean {
@@ -82,8 +101,25 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         return rst;
     }
 
-
     ngAfterViewInit(): void {
+        this.init();
+    }
+
+
+    setPicker = mu.debounce((options, result) => {
+        this.picker.emit({
+            options,
+            result,
+            start: this.$$MonthPicker.dateformat(result[0]),
+            end: this.$$MonthPicker.dateformat(result[1])
+        });
+    }, 600);
+
+    init() {
+        mu.run(this.$rp, () => {
+            this.$rp.destroy();
+        });
+
         let nd = new Date();
         nd.setMonth(nd.getMonth() - 1);
         let yyyy = nd.getFullYear();
@@ -122,7 +158,7 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
 
             setDate: [
                 [
-                    MM - 2,
+                    MM - 1,
                     yyyy
                 ],
                 [
@@ -140,34 +176,28 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         // this.$$MonthPicker.setOptions(options);
         let $elm = (<any>$(this.elm.nativeElement));
         $elm.rangePicker(options);
-        let $rp = $elm.data('_ranegPicker');
+        this.$rp = $elm.data('_ranegPicker');
 
         if(this.calc(options)){
-            $rp.update(options.setDate);
+            this.$rp.update(options.setDate);
         }
 
         mu.run($elm.data('_ranegPicker'), ($rp) => {
-            let result = $rp.result;
-            this.picker.emit({
-                result,
-                start: this.$$MonthPicker.dateformat(result[0]),
-                end: this.$$MonthPicker.dateformat(result[1])
-            })
+            this.setPicker(options, $rp.result);
         });
 
         $elm.on('datePicker.done', (e, result) => {
             options.setDate = result;
             if(this.calc(options)){
-                $rp.update(options.setDate);
+                this.$rp.update(options.setDate);
             }
 
             this.selected.emit({
+                options,
                 result: options.setDate,
                 start: this.$$MonthPicker.dateformat(options.setDate[0]),
                 end: this.$$MonthPicker.dateformat(options.setDate[1])
             });
         });
     }
-
-
 }

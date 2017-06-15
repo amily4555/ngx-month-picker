@@ -8,24 +8,31 @@ import {$$MonthPicker} from '../lib/month-picker.serv';
         <div class="container">
             <h2>Angular 4 ngx-month-picker demo</h2>
             <input type="text" month-picker
+                [options] = "options"
                 (selected)="getMonths($event)"
                 (picker)="picker($event)"/>
-            <!--<month-picker -->
-                <!--[options]="{setDate:['2017-02', [3, 2017]]}"></month-picker>-->
-                <!---->
-            <!--<month-picker -->
-                <!--(getMonths)="getMonths($event)"></month-picker>-->
+                
+            <month-picker 
+                (picker)="picker($event)"
+                (selected)="getMonths($event)"
+                [options]="options"></month-picker>
+                
             
         </div>
   `,
     providers: [
-        // { provide: TreeviewI18n, useClass: DefaultTreeviewI18n }
     ]
 })
 export class AppComponent {
 
-    constructor(private $$MonthPicker: $$MonthPicker) {
+    options: any = {};
 
+    constructor(private $$MonthPicker: $$MonthPicker) {
+        setTimeout(() => {
+            this.options = {
+                maxDate: [3, 2017]
+            }
+        }, 400)
     }
 
     getMonths(rst) {
