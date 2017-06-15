@@ -197,11 +197,9 @@
         // when clicking the "apply" button
         applyDate: function() {
             this.update();
-
             if(this.settings.closeOnSelect) {
                 this.hide();
             }
-
             this.obj.trigger('datePicker.done', [this.result]);
         },
 
@@ -210,6 +208,7 @@
         },
 
         // change selected preset and remove the selection from the custom area
+        // 计算自定义时间范围
         changePreset: function(val) {
 
             var presetWrap = this.presets.parent();
@@ -396,7 +395,6 @@
         // disable the "apply" button if validation fails
         validateResult: function(result) {
             result = result || this.result;
-
             if(typeof this.result == 'object') {
                 if(result[0].length < 2 || result[1].length < 2
                     || !result[0][0] || !result[1][0]  // if there is no value
@@ -424,7 +422,6 @@
             this.yearSelectors[0].value = +result[0][1];
             this.yearSelectors[1].value = +result[1][1];
             this.valideEndYear();
-
 
             // Months
             this.validMonthsInYear(true);

@@ -59,14 +59,15 @@ export class $$MonthPickerComponent implements OnChanges, AfterViewChecked {
     ngAfterViewChecked(): void {
         mu.empty(this.range_months, () => {
             this.range_months = this.$$MonthPicker.options.range_months;
-            this.getMonths.emit({
-                range_months: this.range_months,
-                setDate: this.$$MonthPicker.options.setDate
-            });
+            // this.getMonths.emit({
+            //     range_months: this.range_months,
+            //     setDate: this.$$MonthPicker.options.setDate
+            // });
         });
     }
 
     getMonths_(rst: any): void {
+        console.debug(rst);
         this.range_months = rst.range_months;
         this.getMonths.emit(rst);
     }
