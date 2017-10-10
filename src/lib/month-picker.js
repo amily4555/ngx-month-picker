@@ -52,7 +52,12 @@
                 to: 'window',
                 attachment: 'together'
             }]
-        })
+        });
+
+        // reposition -> by mizi
+        setTimeout(() => {
+            this.tether.position();
+        }, 500);
     };
 
     RangePicker.prototype = {
@@ -599,7 +604,7 @@
             displayText: 'twelve months',
             value: 'custom'
         }],
-       // months: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+        // months: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
         months: [
             '1',
             '2',

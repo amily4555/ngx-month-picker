@@ -21,13 +21,7 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.debug(JSON.stringify(this.options));
-
-        mu.run(mu.prop(changes, 'options.currentValue'), (options) => {
-
-            // console.debug(JSON.stringify(this.options));
-
-            this.options = options;
+        mu.run(changes['options'], () => {
             mu.run(this.$rp, () => {
                 this.init();
             });
@@ -68,12 +62,15 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         let month = result % 12;
         let year = Math.floor(result / 12);
 
-        if(!month){
+        if (!month) {
             month = 12;
             year = year - 1;
         }
 
-        return [month, year];
+        return [
+            month,
+            year
+        ];
     }
 
     calc(options): boolean {
@@ -85,18 +82,21 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         let min = options.minDate;
         let max = options.maxDate;
 
-        if(diff(end, max) > 0){
+        if (diff(end, max) > 0) {
             end = mu.clone(max);
             start = this.diffresult(end, end_diff_start);
             rst = true;
         }
 
-        if(diff(min, start) > 0){
+        if (diff(min, start) > 0) {
             start = mu.clone(min);
             rst = true;
         }
 
-        options.setDate = [start, end];
+        options.setDate = [
+            start,
+            end
+        ];
 
         return rst;
     }
@@ -105,7 +105,6 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         this.init();
     }
 
-
     setPicker = mu.debounce((options, result) => {
         this.picker.emit({
             options,
@@ -113,7 +112,7 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
             start: this.$$MonthPicker.dateformat(result[0]),
             end: this.$$MonthPicker.dateformat(result[1])
         });
-    }, 600);
+    }, 300);
 
     init() {
         mu.run(this.$rp, () => {
@@ -170,7 +169,6 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
             range_months: {}
         };
 
-
         options = mu.extend(true, {}, options, this.$$MonthPicker.options, this.options);
         options = this.transoptions(options);
         // this.$$MonthPicker.setOptions(options);
@@ -178,7 +176,7 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         $elm.rangePicker(options);
         this.$rp = $elm.data('_ranegPicker');
 
-        if(this.calc(options)){
+        if (this.calc(options)) {
             this.$rp.update(options.setDate);
         }
 
@@ -188,7 +186,7 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
 
         $elm.on('datePicker.done', (e, result) => {
             options.setDate = result;
-            if(this.calc(options)){
+            if (this.calc(options)) {
                 this.$rp.update(options.setDate);
             }
 

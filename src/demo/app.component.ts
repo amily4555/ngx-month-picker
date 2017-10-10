@@ -17,11 +17,16 @@ import {$$MonthPicker} from '../lib/month-picker.serv';
                 (selected)="getMonths($event)"
                 [options]="options"></month-picker>
                 
+                
+            <month-picker></month-picker>
             
+            <month-picker [options]="{
+                startDate: '2016-03',
+                endDate: '2017-01'
+            }"></month-picker>
         </div>
   `,
-    providers: [
-    ]
+    providers: []
 })
 export class AppComponent {
 
@@ -30,7 +35,10 @@ export class AppComponent {
     constructor(private $$MonthPicker: $$MonthPicker) {
         setTimeout(() => {
             this.options = {
-                maxDate: [3, 2017]
+                maxDate: [
+                    3,
+                    2017
+                ]
             }
         }, 400)
     }

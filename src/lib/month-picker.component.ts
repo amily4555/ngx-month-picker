@@ -1,11 +1,11 @@
 import {
     Component, Input, OnChanges, SimpleChanges, enableProdMode, Output,
-    EventEmitter
+    EventEmitter, ChangeDetectorRef
 } from '@angular/core';
 import * as mu from 'mzmu';
 import {$$MonthPicker} from './month-picker.serv';
 
-enableProdMode();
+// enableProdMode();
 @Component({
     selector: 'month-picker',
     template: `
@@ -33,11 +33,18 @@ export class $$MonthPickerComponent implements OnChanges {
 
     range: any;
 
-    constructor(private $$MonthPicker: $$MonthPicker) {
+    constructor(private $$MonthPicker: $$MonthPicker, private ref: ChangeDetectorRef) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.debug(':::::::', JSON.stringify(this.options));
+        mu.run(mu.prop(changes, 'options.currentValue'), (o) => {
+            if (!o['setDate'] && o['startDate'] && o['endDate']) {
+                this.options.setDate = [
+                    o['startDate'],
+                    o['endDate']
+                ];
+            }
+        });
     }
 
     selected_(rst: any): void {
