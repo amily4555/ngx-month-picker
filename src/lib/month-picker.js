@@ -54,9 +54,11 @@
             }]
         });
 
+        var that = this;
+
         // reposition -> by mizi
-        setTimeout(() => {
-            this.tether.position();
+        setTimeout(function() {
+            that.tether.position();
         }, 500);
     };
 
