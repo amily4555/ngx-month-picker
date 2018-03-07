@@ -7,23 +7,23 @@ import {$$MonthPicker} from '../lib/month-picker.serv';
     template: `
         <div class="container">
             <h2>Angular 4 ngx-month-picker demo</h2>
-            <input type="text" month-picker
-                [options] = "options"
-                (selected)="getMonths($event)"
-                (picker)="picker($event)"/>
-                
-            <month-picker 
-                (picker)="picker($event)"
-                (selected)="getMonths($event)"
-                [options]="options"></month-picker>
+            <!--<input type="text" month-picker-->
+                <!--[options] = "options"-->
+                <!--(selected)="getMonths($event)"-->
+                <!--(picker)="picker($event)"/>-->
+                <!---->
+            <!--<month-picker -->
+                <!--(picker)="picker($event)"-->
+                <!--(selected)="getMonths($event)"-->
+                <!--[options]="options"></month-picker>-->
                 
                 
             <month-picker></month-picker>
             
-            <month-picker [options]="{
-                startDate: '2016-03',
-                endDate: '2017-01'
-            }"></month-picker>
+            <!--<month-picker [options]="{-->
+                <!--startDate: '2016-03',-->
+                <!--endDate: '2017-01'-->
+            <!--}"></month-picker>-->
         </div>
   `,
     providers: []
@@ -39,8 +39,8 @@ export class AppComponent {
                     3,
                     2017
                 ]
-            }
-        }, 400)
+            };
+        }, 400);
     }
 
     getMonths(rst) {

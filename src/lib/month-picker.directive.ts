@@ -9,7 +9,7 @@ import {$$MonthPicker} from 'ngx-month-picker';
 @Directive({
     selector: '[month-picker]'
 })
-export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
+export class MonthPickerDirective implements AfterViewInit, OnChanges {
     @Input() options: any;
     @Output() picker: EventEmitter<any> = new EventEmitter<any>();
     @Output() selected: EventEmitter<any> = new EventEmitter<any>();
@@ -31,18 +31,18 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
     // -> 日期转换
     transform(d: any): any[] {
         if (typeof d !== 'object') {
-            let dd = ('' + d).split('-');
+            const dd = ('' + d).split('-');
             return [
                 +mu.trim('' + dd[1]),
                 +mu.trim('' + dd[0])
-            ]
+            ];
         }
         return d;
     }
 
     // -> options 时间转换
     transoptions(options): any {
-        options.setDate = mu.map(options.setDate, (d) => this.transform(d));
+        options.setDate = mu.map(options.setDate, (d) => this.redate(this.transform(d)));
         options.minDate = this.transform(options.minDate);
         options.maxDate = this.transform(options.maxDate);
         return options;
@@ -50,37 +50,41 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
 
     // 计算两个时间间隔的月份
     diff(end, start): number {
-        let end_ = end[1] * 12 + end[0];
-        let start_ = start[1] * 12 + start[0];
+        const end_ = end[1] * 12 + end[0];
+        const start_ = start[1] * 12 + start[0];
         return end_ - start_;
     }
 
-    diffresult(date, diff): any[] {
-        let date_ = date[1] * 12 + date[0];
-        let result = date_ - diff;
-
-        let month = result % 12;
-        let year = Math.floor(result / 12);
-
+    redate(date) {
+        let [month, year] = date;
         if (!month) {
             month = 12;
             year = year - 1;
         }
+        return [month, year];
+    }
 
-        return [
+    diffresult(date, diff): any[] {
+        const date_ = date[1] * 12 + date[0];
+        const result = date_ - diff;
+
+        const month = result % 12;
+        const year = Math.floor(result / 12);
+
+        return this.redate([
             month,
             year
-        ];
+        ]);
     }
 
     calc(options): boolean {
         let rst = false;
-        let diff = this.diff;
-        let start = options.setDate[0];
-        let end = options.setDate[1];
-        let end_diff_start = diff(end, start);
-        let min = options.minDate;
-        let max = options.maxDate;
+        const diff = this.diff;
+        let start = this.redate(options.setDate[0]);
+        let end = this.redate(options.setDate[1]);
+        const end_diff_start = diff(end, start);
+        const min = options.minDate;
+        const max = options.maxDate;
 
         if (diff(end, max) > 0) {
             end = mu.clone(max);
@@ -119,10 +123,10 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
             this.$rp.destroy();
         });
 
-        let nd = new Date();
+        const nd = new Date();
         nd.setMonth(nd.getMonth() - 1);
-        let yyyy = nd.getFullYear();
-        let MM = nd.getMonth();
+        const yyyy = nd.getFullYear();
+        const MM = nd.getMonth();
 
         let options = {
             closeOnSelect: true,
@@ -172,7 +176,7 @@ export class $$MonthPickerDirective implements AfterViewInit, OnChanges {
         options = mu.extend(true, {}, options, this.$$MonthPicker.options, this.options);
         options = this.transoptions(options);
         // this.$$MonthPicker.setOptions(options);
-        let $elm = (<any>$(this.elm.nativeElement));
+        const $elm = (<any>$(this.elm.nativeElement));
         $elm.rangePicker(options);
         this.$rp = $elm.data('_ranegPicker');
 

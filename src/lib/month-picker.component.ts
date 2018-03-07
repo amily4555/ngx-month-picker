@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import * as mu from 'mzmu';
 import {$$MonthPicker} from './month-picker.serv';
+declare var console: any;
 
 // enableProdMode();
 @Component({
@@ -48,6 +49,7 @@ export class $$MonthPickerComponent implements OnChanges {
     }
 
     selected_(rst: any): void {
+        console.log(rst);
         this.range = rst;
         this.selected.emit(rst);
     }
@@ -56,5 +58,4 @@ export class $$MonthPickerComponent implements OnChanges {
         this.range = rst;
         this.picker.emit(rst);
     }
-
 }
